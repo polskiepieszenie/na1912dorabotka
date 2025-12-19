@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>EcoShare — Объявления</title>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">EcoShare</div>
+  <nav>
+    <ul>
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="ads.html" class="active">Объявления</a></li>
+      <li><a href="add.html">Добавить вещь</a></li>
+      <li><a href="about.html">О проекте</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="ads-list">
+  <h2>Объявления</h2>
+  <ul id="ads"></ul>
+</section>
+
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const ads = JSON.parse(localStorage.getItem("eco_ads")) || [];
+  const list = document.getElementById("ads");
+
+  ads.forEach(ad => {
+    const li = document.createElement("li");
+    li.classList.add("ad-card");
+    li.innerHTML = `
+      <strong>${ad.title}</strong>
+      <p>${ad.description}</p>
+      <em>Автор: ${ad.author}</em>
+      <p>📞 ${ad.phone}</p>
+      <p>📧 <a href="mailto:${ad.email}">${ad.email}</a></p>
+      ${ad.image ? `<img src="${ad.image}">` : ""}
+    `;
+    list.appendChild(li);
+  });
+});
+</script>
+
+
+<footer class="footer">
+  <p>© 2025 EcoShare</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>EcoShare — Добавить вещь</title>
+</head>
+<body class="add-page">
+
+<header class="header">
+  <div class="logo">EcoShare</div>
+  <nav>
+    <ul>
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="ads.html">Объявления</a></li>
+      <li><a href="add.html" class="active">Добавить вещь</a></li>
+      <li><a href="about.html">О проекте</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="add-form">
+  <h2>Добавить объявление</h2>
+  <form id="adForm">
+    <input type="text" id="title" placeholder="Заголовок" required>
+    <textarea id="description" placeholder="Описание" required></textarea>
+    <input type="text" id="author" placeholder="Ваше имя" required>
+    <input type="tel" id="phone" placeholder="Телефон" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="file" id="image" accept="image/*">
+    <button type="submit">Добавить</button>
+  </form>
+</section>
+
+<section class="ads-list">
+  <h2>Ваши объявления</h2>
+  <ul id="ads"></ul>
+</section>
+
+<script>
+document.getElementById("adForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const author = document.getElementById("author").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const imageFile = document.getElementById("image").files[0];
+
+  let ads = JSON.parse(localStorage.getItem("eco_ads")) || [];
+
+  const saveAd = (img = null) => {
+    ads.push({ title, description, author, phone, email, image: img });
+    localStorage.setItem("eco_ads", JSON.stringify(ads));
+    document.getElementById("adForm").reset();
+    loadAds();
+  };
+
+  if (imageFile) {
+    const reader = new FileReader();
+    reader.onload = e => saveAd(e.target.result);
+    reader.readAsDataURL(imageFile);
+  } else {
+    saveAd();
+  }
+});
+
+function loadAds() {
+  const ads = JSON.parse(localStorage.getItem("eco_ads")) || [];
+  const list = document.getElementById("ads");
+  list.innerHTML = "";
+
+  ads.forEach(ad => {
+    const li = document.createElement("li");
+    li.classList.add("ad-card");
+    li.innerHTML = `
+      <strong>${ad.title}</strong>
+      <p>${ad.description}</p>
+      <em>Автор: ${ad.author}</em>
+      <p>📞 ${ad.phone}</p>
+      <p>📧 <a href="mailto:${ad.email}">${ad.email}</a></p>
+      ${ad.image ? `<img src="${ad.image}">` : ""}
+    `;
+    list.appendChild(li);
+  });
+}
+
+window.addEventListener("DOMContentLoaded", loadAds);
+</script>
+
+
+<footer class="footer">
+  <p>© 2025 EcoShare</p>
+</footer>
+
+</body>
+</html>
